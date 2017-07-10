@@ -14,6 +14,7 @@
 #include <sstream>
 #include <string>
 #include <iterator>
+#include <chrono>
 
 #include "particle_filter.h"
 
@@ -25,15 +26,16 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 	// Add random Gaussian noise to each particle.
 	// NOTE: Consult particle_filter.h for more information about this method (and others in this file).
 
-  default_random_engine random;
+  num_particles_ = 1000;
+  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  random_.seed(seed);
+  
   normal_distribution<double> n_x(x, std[0]);
   normal_distribution<double> n_y(y, std[1]);
-  normal_distribution<double> n_psi(theta, std[2]);
-  
-  num_particles_ = 1000;
+  normal_distribution<double> n_theta(theta, std[2]);
   
   for (int i=0; i<num_particles_; i++) {
-    Particle particle(i, n_x(random), n_y(random), n_psi(random), 0);
+    Particle particle(i, n_x(random_), n_y(random_), n_theta(random_), 0);
     particles_.push_back(particle);
   }
   
@@ -46,6 +48,22 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 	//  http://en.cppreference.com/w/cpp/numeric/random/normal_distribution
 	//  http://www.cplusplus.com/reference/random/default_random_engine/
   
+  for (int i=0; i<num_particles_; i++) {
+    double theta = particles_[i].theta;
+    particles_[i].theta += yaw_rate * delta_t;
+    
+    double coefficient = velocity/yaw_rate;
+    double measurement_x = coefficient * (sin(particles_[i].theta) - sin(theta));
+    double measurement_y = coefficient * (cos(theta) - cos(particles_[i].theta));
+
+    normal_distribution<double> n_x(0, std_pos[0]);
+    normal_distribution<double> n_y(0, std_pos[1]);
+    normal_distribution<double> n_theta(0, std_pos[2]);
+    
+    particles_[i].x += measurement_x + n_x(random_);
+    particles_[i].y += measurement_y + n_y(random_);
+    particles_[i].theta += n_theta(random_);
+  }
 }
 
 void ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, std::vector<LandmarkObs>& observations) {
