@@ -17,6 +17,7 @@
 #include <string>
 #include <iterator>
 #include <chrono>
+#include <limits.h>
 
 #include "particle_filter.h"
 
@@ -27,7 +28,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
   // Initialize each particle with random values using Gaussian distribution.
 
   num_particles = 100;
-  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  unsigned seed = chrono::system_clock::now().time_since_epoch().count();
   default_random_engine random;
   random.seed(seed);
 
@@ -54,7 +55,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
   // Calculate the next position for each particle.
   // Different equations have to be used depending on the value of the yaw rate.
 
-  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  unsigned seed = chrono::system_clock::now().time_since_epoch().count();
   default_random_engine random;
   random.seed(seed);
 
@@ -142,7 +143,7 @@ void ParticleFilter::resample() {
   // Resample particles depending on the ratio of the weight.
   // The larger the weight is, The more likely the particle is picked up.
 
-  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  unsigned seed = chrono::system_clock::now().time_since_epoch().count();
   default_random_engine random;
   random.seed(seed);
 
