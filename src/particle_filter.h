@@ -9,18 +9,10 @@
 #ifndef PARTICLE_FILTER_H_
 #define PARTICLE_FILTER_H_
 
-#include <random>
 #include "helper_functions.h"
 
 struct Particle {
-  
-  Particle() {}
-  
-  Particle(int id, double x, double y, double theta, double weight):
-           id(id), x(x), y(y), theta(theta), weight(weight) {}
-  
-  ~Particle() {}
-  
+
 	int id;
 	double x;
 	double y;
@@ -32,28 +24,28 @@ struct Particle {
 };
 
 
+
 class ParticleFilter {
 	
 	// Number of particles to draw
-	int num_particles_;
+	int num_particles; 
+	
+	
 	
 	// Flag, if filter is initialized
-	bool is_initialized_;
+	bool is_initialized;
 	
 	// Vector of weights of all particles
-	std::vector<double> weights_;
-  
-  // Random number generator
-  std::default_random_engine random_;
+	std::vector<double> weights;
 	
 public:
 	
 	// Set of current particles
-	std::vector<Particle> particles_;
+	std::vector<Particle> particles;
 
 	// Constructor
 	// @param M Number of particles
-	ParticleFilter() : num_particles_(0), is_initialized_(false) {}
+	ParticleFilter() : num_particles(0), is_initialized(false) {}
 
 	// Destructor
 	~ParticleFilter() {}
@@ -120,7 +112,7 @@ public:
 	 * initialized Returns whether particle filter is initialized yet or not.
 	 */
 	const bool initialized() const {
-		return is_initialized_;
+		return is_initialized;
 	}
 };
 
