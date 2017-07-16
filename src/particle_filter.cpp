@@ -27,7 +27,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 
   // Initialize each particle with random values using Gaussian distribution.
 
-  num_particles = 100;
+  num_particles = 1000;
   unsigned seed = chrono::system_clock::now().time_since_epoch().count();
   default_random_engine random;
   random.seed(seed);
